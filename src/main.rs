@@ -20,6 +20,9 @@ struct AgentInfo {
 struct Response {
     req_id: String,
     body: String,
+    #[serde(rename = "statusCode")]
+    status_code: u16,
+    cookies: String,
 }
 
 impl std::fmt::Display for Response {
@@ -40,6 +43,8 @@ async fn deserialize_agent_info(
         Box::new(Response {
             req_id,
             body: "Failed to parse input".to_owned(),
+            status_code: 500,
+            cookies: String::new(),
         }) as Box<dyn std::error::Error + Send + Sync>
     })
 }
@@ -52,6 +57,8 @@ async fn fetch_profile_data(username: String, req_id: String) -> Result<Response
             Response {
                 req_id: req_id.clone(),
                 body: serde_json::to_string(&profile).expect("Failed to serialize profile"),
+                status_code: 200,
+                cookies: String::new(),
             }
         })
         .map_err(|err| {
@@ -59,6 +66,8 @@ async fn fetch_profile_data(username: String, req_id: String) -> Result<Response
             Box::new(Response {
                 req_id,
                 body: "Failed to parse input".to_owned(),
+                status_code: 500,
+                cookies: String::new(),
             }) as Box<dyn std::error::Error + Send + Sync>
         })
 }
