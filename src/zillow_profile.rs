@@ -17,45 +17,43 @@ use serde::{Deserialize, Serialize};
 pub struct ZillowEmbeddedJson {
     #[serde(rename = "props")]
     pub props: Option<Props>,
+    // #[serde(rename = "page")]
+    // pub page: Option<String>,
 
-    #[serde(rename = "page")]
-    pub page: Option<String>,
+    // #[serde(rename = "query")]
+    // pub query: Option<Query>,
 
-    #[serde(rename = "query")]
-    pub query: Option<Query>,
+    // #[serde(rename = "buildId")]
+    // pub build_id: Option<String>,
 
-    #[serde(rename = "buildId")]
-    pub build_id: Option<String>,
+    // #[serde(rename = "assetPrefix")]
+    // pub asset_prefix: Option<String>,
 
-    #[serde(rename = "assetPrefix")]
-    pub asset_prefix: Option<String>,
+    // #[serde(rename = "runtimeConfig")]
+    // pub runtime_config: Option<RuntimeConfig>,
 
-    #[serde(rename = "runtimeConfig")]
-    pub runtime_config: Option<RuntimeConfig>,
+    // #[serde(rename = "isFallback")]
+    // pub is_fallback: Option<bool>,
 
-    #[serde(rename = "isFallback")]
-    pub is_fallback: Option<bool>,
+    // #[serde(rename = "gssp")]
+    // pub gssp: Option<bool>,
 
-    #[serde(rename = "gssp")]
-    pub gssp: Option<bool>,
+    // #[serde(rename = "customServer")]
+    // pub custom_server: Option<bool>,
 
-    #[serde(rename = "customServer")]
-    pub custom_server: Option<bool>,
-
-    #[serde(rename = "appGip")]
-    pub app_gip: Option<bool>,
+    // #[serde(rename = "appGip")]
+    // pub app_gip: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Props {
     #[serde(rename = "pageProps")]
     pub page_props: Option<PageProps>,
+    // #[serde(rename = "pageFrameData")]
+    // pub page_frame_data: Option<PageFrameData>,
 
-    #[serde(rename = "pageFrameData")]
-    pub page_frame_data: Option<PageFrameData>,
-
-    #[serde(rename = "__N_SSP")]
-    pub n_ssp: Option<bool>,
+    // #[serde(rename = "__N_SSP")]
+    // pub n_ssp: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -109,7 +107,7 @@ pub struct PageProps {
     pub map: Option<Map>,
 
     #[serde(rename = "paginationPageSize")]
-    pub pagination_page_size: Option<i64>,
+    pub pagination_page_size: Option<f64>,
 
     #[serde(rename = "pastSales")]
     pub past_sales: Option<PastSales>,
@@ -187,10 +185,10 @@ pub struct DisplayUser {
     pub name: Option<String>,
 
     #[serde(rename = "flag")]
-    pub flag: Option<i64>,
+    pub flag: Option<f64>,
 
     #[serde(rename = "profileTypeIds")]
-    pub profile_type_ids: Option<Vec<i64>>,
+    pub profile_type_ids: Option<Vec<f64>>,
 
     #[serde(rename = "profileTypes")]
     pub profile_types: Option<Vec<String>>,
@@ -223,13 +221,13 @@ pub struct ForListings {
     pub listings: Option<Vec<Listing>>,
 
     #[serde(rename = "listing_count")]
-    pub listing_count: Option<i64>,
+    pub listing_count: Option<f64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Listing {
     #[serde(rename = "zpid")]
-    pub zpid: Option<i64>,
+    pub zpid: Option<f64>,
 
     #[serde(rename = "home_type")]
     pub home_type: Option<String>,
@@ -238,10 +236,10 @@ pub struct Listing {
     pub address: Option<Address>,
 
     #[serde(rename = "bedrooms")]
-    pub bedrooms: Option<i64>,
+    pub bedrooms: Option<f64>,
 
     #[serde(rename = "bathrooms")]
-    pub bathrooms: Option<i64>,
+    pub bathrooms: Option<f64>,
 
     #[serde(rename = "openHouses")]
     pub open_houses: Option<String>,
@@ -253,7 +251,7 @@ pub struct Listing {
     pub primary_photo_url: Option<String>,
 
     #[serde(rename = "price")]
-    pub price: Option<i64>,
+    pub price: Option<f64>,
 
     #[serde(rename = "price_currency")]
     pub price_currency: Option<String>,
@@ -304,7 +302,7 @@ pub struct Address {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LastYearPastSalesTotal {
     #[serde(rename = "count")]
-    pub count: Option<i64>,
+    pub count: Option<f64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -328,7 +326,7 @@ pub struct MapCentroid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PastSales {
     #[serde(rename = "total")]
-    pub total: Option<i64>,
+    pub total: Option<f64>,
 
     #[serde(rename = "past_sales")]
     pub past_sales: Option<Vec<PastSale>>,
@@ -346,7 +344,7 @@ pub struct PastSale {
     pub price: Option<String>,
 
     #[serde(rename = "zpid")]
-    pub zpid: Option<i64>,
+    pub zpid: Option<f64>,
 
     #[serde(rename = "image_url")]
     pub image_url: Option<String>,
@@ -388,7 +386,7 @@ pub struct Lender {
     pub display_account_name: Option<bool>,
 
     #[serde(rename = "employerNMLSId")]
-    pub employer_nmls_id: Option<i64>,
+    pub employer_nmls_id: Option<f64>,
 
     #[serde(rename = "firstName")]
     pub first_name: Option<String>,
@@ -400,13 +398,13 @@ pub struct Lender {
     pub last_name: Option<String>,
 
     #[serde(rename = "nmlsLicense")]
-    pub nmls_license: Option<i64>,
+    pub nmls_license: Option<f64>,
 
     #[serde(rename = "ratingAverage")]
     pub rating_average: Option<f64>,
 
     #[serde(rename = "reviewReceivedCount")]
-    pub review_received_count: Option<i64>,
+    pub review_received_count: Option<f64>,
 
     #[serde(rename = "screenName")]
     pub screen_name: Option<String>,
@@ -415,7 +413,7 @@ pub struct Lender {
     pub website: Option<String>,
 
     #[serde(rename = "zuid")]
-    pub zuid: Option<i64>,
+    pub zuid: Option<f64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -580,7 +578,7 @@ pub struct ContactCard {
     pub profile_photo_alt: Option<String>,
 
     #[serde(rename = "profilePhotoHeight")]
-    pub profile_photo_height: Option<i64>,
+    pub profile_photo_height: Option<f64>,
 
     #[serde(rename = "profilePhotoIsvalid")]
     pub profile_photo_isvalid: Option<bool>,
@@ -589,7 +587,7 @@ pub struct ContactCard {
     pub profile_photo_src: Option<String>,
 
     #[serde(rename = "profilePhotoWidth")]
-    pub profile_photo_width: Option<i64>,
+    pub profile_photo_width: Option<f64>,
 
     #[serde(rename = "reviewsPath")]
     pub reviews_path: Option<String>,
@@ -670,7 +668,7 @@ pub struct AllActivity {
     pub sales: Option<String>,
 
     #[serde(rename = "seoReviewCount")]
-    pub seo_review_count: Option<i64>,
+    pub seo_review_count: Option<f64>,
 
     #[serde(rename = "seoReviewRating")]
     pub seo_review_rating: Option<f64>,
@@ -802,10 +800,10 @@ pub struct Filter {
     pub prompt: Option<String>,
 
     #[serde(rename = "count")]
-    pub count: Option<i64>,
+    pub count: Option<f64>,
 
     #[serde(rename = "serviceTypeIds")]
-    pub service_type_ids: Option<Vec<i64>>,
+    pub service_type_ids: Option<Vec<f64>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -814,7 +812,7 @@ pub struct Review {
     pub review_comment: Option<String>,
 
     #[serde(rename = "reviewId")]
-    pub review_id: Option<i64>,
+    pub review_id: Option<f64>,
 
     #[serde(rename = "subRatings")]
     pub sub_ratings: Option<Vec<SubRating>>,
@@ -826,7 +824,7 @@ pub struct Review {
     pub reviewer: Option<Reviewe>,
 
     #[serde(rename = "rating")]
-    pub rating: Option<i64>,
+    pub rating: Option<f64>,
 
     #[serde(rename = "createDate")]
     pub create_date: Option<String>,
@@ -868,7 +866,7 @@ pub struct SubRating {
     pub description: Option<Description>,
 
     #[serde(rename = "score")]
-    pub score: Option<i64>,
+    pub score: Option<f64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -883,7 +881,7 @@ pub struct SeoFooter {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServiceArea {
     #[serde(rename = "regionId")]
-    pub region_id: Option<i64>,
+    pub region_id: Option<f64>,
 
     #[serde(rename = "text")]
     pub text: Option<String>,
