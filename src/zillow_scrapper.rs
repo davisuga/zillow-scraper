@@ -1,4 +1,20 @@
 use reqwest::header::{self, HeaderMap};
+use std::collections::HashMap;
+use tracing::info;
+
+macro_rules! memoize {
+    ($func:expr) => {{
+        let mut cache = HashMap::new();
+        move |arg| {
+            if let Some(result) = cache.get(arg) {
+                return result.clone();
+            }
+            let result = $func(arg);
+            cache.insert(arg.clone(), result.clone());
+            result
+        }
+    }};
+}
 
 use std::error::Error;
 
@@ -6,6 +22,7 @@ use crate::zillow_profile::ZillowEmbeddedJson;
 
 pub async fn get_profile_data(name: &str) -> Result<ZillowEmbeddedJson, Box<dyn Error>> {
     let url = format!("https://www.zillow.com/profile/{}/", name);
+    println!("url: {}", &url);
     let client = reqwest::Client::new();
 
     let mut headers = HeaderMap::new();
@@ -35,29 +52,74 @@ pub async fn get_profile_data(name: &str) -> Result<ZillowEmbeddedJson, Box<dyn 
         .await?
         .text()
         .await?;
-
-    let data = extract_data_from_html(&res)?;
-    let parsed: ZillowEmbeddedJson = serde_json::from_str(&data)?;
-    println!("{:#?}", parsed);
+    let json_raw = extract_data_from_html(&res)?;
+    let parsed: ZillowEmbeddedJson = serde_json::from_str(&json_raw)?;
     Ok(parsed)
 }
 pub fn extract_data_from_html(html: &str) -> Result<String, Box<dyn Error>> {
-    let data_regex =
-        regex::Regex::new(r#"id="__NEXT_DATA__" type="application/json">(.+})</script"#)?;
-    let data = data_regex
-        .captures(html)
-        .ok_or("Data not found")?
-        .get(1)
-        .ok_or("Capture group not found")?
-        .as_str()
-        .to_string();
-    Ok(data)
+    let dom = tl::parse(&html, tl::ParserOptions::default()).unwrap();
+    let parser = dom.parser();
+    Ok(dom
+        .get_element_by_id("__NEXT_DATA__")
+        .ok_or_else(|| "No element with id '__NEXT_DATA__' found")?
+        .get(parser)
+        .ok_or_else(|| "Element with id '__NEXT_DATA__' has no inner text")?
+        .inner_text(parser)
+        .into())
+}
+pub async fn get_profile_data_with_redis_cache(
+    name: &str,
+) -> Result<ZillowEmbeddedJson, Box<dyn Error>> {
+    // Check if the profile data is already cached in Redis
+    if let Some(cached_data) = get_from_redis(name).await? {
+        return Ok(cached_data);
+    }
+    let profile_data = get_profile_data(name).await?;
+
+    // Cache the profile data in Redis
+    cache_in_redis(name, &profile_data).await?;
+
+    Ok(profile_data)
+}
+
+async fn get_from_redis(name: &str) -> Result<Option<ZillowEmbeddedJson>, Box<dyn Error>> {
+    // Connect to Redis
+    let client = redis::Client::open("redis://127.0.0.1/")?;
+    let mut conn = client.get_async_connection().await?;
+
+    // Get the cached data from Redis
+    let cached_data: Option<String> = redis::cmd("GET").arg(name).query_async(&mut conn).await?;
+    if let Some(data) = cached_data {
+        let parsed: ZillowEmbeddedJson = serde_json::from_str(&data)?;
+        Ok(Some(parsed))
+    } else {
+        Ok(None)
+    }
+}
+
+async fn cache_in_redis(name: &str, data: &ZillowEmbeddedJson) -> Result<(), Box<dyn Error>> {
+    // Connect to Redis
+    let client = redis::Client::open("redis://127.0.0.1/")?;
+    let mut conn = client.get_async_connection().await?;
+
+    // Cache the data in Redis
+    let json_data = serde_json::to_string(data)?;
+    redis::cmd("SET")
+        .arg(name)
+        .arg(json_data)
+        .query_async::<_, ()>(&mut conn)
+        .await?;
+    Ok(())
 }
 #[cfg(test)]
 mod tests {
+    use crate::zillow_scrapper::{get_profile_data, get_profile_data_with_redis_cache};
+
     #[tokio::test]
     async fn it_works() {
-        let name = "Adam Merrick";
-        assert_eq!(super::get_profile_data(name).await.is_ok(), true);
+        let name = "Matt Laricy";
+        let result = get_profile_data_with_redis_cache(name).await;
+        println!("result: {:?}", result);
+        assert_eq!(result.is_ok(), true);
     }
 }
