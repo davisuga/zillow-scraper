@@ -1,20 +1,4 @@
 use reqwest::header::{self, HeaderMap};
-use std::collections::HashMap;
-use tracing::info;
-
-macro_rules! memoize {
-    ($func:expr) => {{
-        let mut cache = HashMap::new();
-        move |arg| {
-            if let Some(result) = cache.get(arg) {
-                return result.clone();
-            }
-            let result = $func(arg);
-            cache.insert(arg.clone(), result.clone());
-            result
-        }
-    }};
-}
 
 use std::error::Error;
 
@@ -113,7 +97,7 @@ async fn cache_in_redis(name: &str, data: &ZillowEmbeddedJson) -> Result<(), Box
 }
 #[cfg(test)]
 mod tests {
-    use crate::zillow_scrapper::{get_profile_data, get_profile_data_with_redis_cache};
+    use crate::zillow_scrapper::get_profile_data_with_redis_cache;
 
     #[tokio::test]
     async fn it_works() {
